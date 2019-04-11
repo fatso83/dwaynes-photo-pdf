@@ -1,6 +1,8 @@
 # Pre-fill Dwayne's Photo Order Forms
 > I really hate filling them out, OK?
 
+The bundle is humongous, but this can easily improve later.
+
 ## Running the Example
 ```bash
 git clone https://github.com/fatso83/dwaynes-photo-pdf

@@ -55,16 +55,21 @@ module.exports = async function buildPdf(getAsset, saveAsFile, data) {
   // simply a sequence of PDF operators that define what we want to draw on the
   // page.
 
-  const name = data.name;
-  const newContentStream = pdfDoc.createContentStream(
-    drawLinesOfText([name.val].map(courierFont.encodeText), {
-      x: name.x,
-      y: name.y,
+  const pdfOperators = Object.keys(data).map(key => {
+    const el = data[key];
+
+    return drawLinesOfText([el.val].map(courierFont.encodeText), {
+      x: el.x,
+      y: el.y,
       font: COURIER_FONT,
-      size: 12,
+      size: 10,
       colorRgb: [0, 0, 0]
-    })
-  );
+    });
+  });
+
+  console.log(pdfOperators);
+
+  const newContentStream = pdfDoc.createContentStream(...pdfOperators);
 
   // Here we (1) register the content stream to the PDF document, and (2) add the
   // reference to the registered stream to the page's content streams.
