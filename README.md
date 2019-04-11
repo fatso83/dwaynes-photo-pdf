@@ -1,6 +1,16 @@
 # Pre-fill Dwayne's Photo Order Forms
 > I really hate filling them out, OK?
 
+## Work in progress
+This is just a POC as it stands. 
+I need to 
+- get all/some existing order forms
+- find all the offsets for the inputs in each document 
+- add calculaton logic, taking values from input form
+- etc
+
+Also, would be nice to [embed it on the page as a preview](https://pdfobject.com)
+
 ## Demo
 [https://dwayne-photo-prefill.fatso83.now.sh](https://dwayne-photo-prefill.fatso83.now.sh)
 
