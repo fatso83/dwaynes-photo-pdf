@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "browserify -d browser-init.js -o dist/index.js",
+    "deploy": "now",
     "start": "npm run build && http-server ."
   },
   "browserify": {
