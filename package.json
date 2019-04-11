@@ -11,11 +11,11 @@
   "browserify": {
     "transform": [
       [
+        "browserify-shim",
         "babelify",
         {
           "sourceMap": true
-        },
-        "browserify-shim"
+        }
       ]
     ]
   },
