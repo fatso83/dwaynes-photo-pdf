@@ -7,8 +7,33 @@ const {
   drawRectangle,
   drawEllipse,
   drawImage
-//} = window.PDFLib;
 } = require("pdf-lib");
+
+// Returns an object of shape: { width: number, height: number }
+// https://github.com/Hopding/pdf-lib/issues/62#issuecomment-453847201
+const getPageDimensions = page => {
+  let mediaBox;
+
+  // Check for MediaBox on the page itself
+  const hasMediaBox = !!page.getMaybe("MediaBox");
+  if (hasMediaBox) {
+    mediaBox = page.index.lookup(page.get("MediaBox"));
+  }
+
+  // Check for MediaBox on each parent node
+  page.Parent.ascend(parent => {
+    const parentHasMediaBox = !!parent.getMaybe("MediaBox");
+    if (!mediaBox && parentHasMediaBox) {
+      mediaBox = parent.index.lookup(parent.get("MediaBox"));
+    }
+  }, true);
+
+  // This should never happen in valid PDF files
+  if (!mediaBox) throw new Error("Page Tree is missing MediaBox");
+
+  // Extract and return the width and height
+  return { width: mediaBox.array[2].number, height: mediaBox.array[3].number };
+};
 
 module.exports = async function buildPdf(getAsset, saveAsFile, data) {
   /* ==================== 1. Read in Fonts and Images ========================= */
@@ -51,6 +76,11 @@ module.exports = async function buildPdf(getAsset, saveAsFile, data) {
   // Now we'll add the Courier font dictionary and Mario PNG image object that we
   // embedded into the document earlier.
   const existingPage = pages[0].addFontDictionary(COURIER_FONT, courierRef);
+
+  const dims = getPageDimensions(existingPage);
+
+  console.log("First page width:", dims.width);
+  console.log("First page height:", dims.height);
 
   // Here, we define a new "content stream" for the page. A content stream is
   // simply a sequence of PDF operators that define what we want to draw on the

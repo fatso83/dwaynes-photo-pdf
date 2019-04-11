@@ -1,5 +1,37 @@
 const buildPdf = require("./build-pdf");
 
+/**
+ * Track mouse relative to some element
+ *
+ * TODO: Add preview/embed functionality and use the preview
+ * to get exact pixel offsets for the input boxes
+ * Typically, some kind of hover effect for the mouse showing (X,Y)
+ */
+function getRelativeCoordinates(event, element) {
+  const position = {
+    x: event.pageX,
+    y: event.pageY
+  };
+
+  const offset = {
+    left: element.offsetLeft,
+    top: element.offsetTop
+  };
+
+  let reference = element.offsetParent;
+
+  while (reference != null) {
+    offset.left += reference.offsetLeft;
+    offset.top += reference.offsetTop;
+    reference = reference.offsetParent;
+  }
+
+  return {
+    x: position.x - offset.left,
+    y: position.y - offset.top
+  };
+}
+
 /** @returns {Uint8Array} the asset as an array of unsigned bytes */
 async function getAsset(path) {
   const response = await fetch(path);
