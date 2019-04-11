@@ -7,6 +7,7 @@ const {
   drawRectangle,
   drawEllipse,
   drawImage
+//} = window.PDFLib;
 } = require("pdf-lib");
 
 module.exports = async function buildPdf(getAsset, saveAsFile, data) {
