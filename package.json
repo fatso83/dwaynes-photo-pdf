@@ -34,6 +34,7 @@
   "license": "ISC",
   "dependencies": {
     "pdf-lib": "0.6.1",
+    "pdfobject": "^2.1.1",
     "promisify": "0.0.3"
   },
   "devDependencies": {

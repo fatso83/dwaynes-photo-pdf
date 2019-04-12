@@ -1,4 +1,5 @@
 const buildPdf = require("./build-pdf");
+const PDFObject = require("pdfobject");
 
 /**
  * Track mouse relative to some element
@@ -39,18 +40,32 @@ async function getAsset(path) {
   return new Uint8Array(arrayBuffer);
 }
 
-var a = document.createElement("a");
-document.body.appendChild(a);
+const embedTarget = document.getElementById("embed-pdf");
+const a = document.getElementById("save-btn");
+//const a = document.createElement("a");
+//document.body.appendChild(a);
 a.style = "display: none";
+let blobUrl;
 async function saveAsFile(fileName, pdfBytes) {
-  const blob = new Blob([pdfBytes], { type: "octet/stream" });
-  const blobUrl = URL.createObjectURL(blob);
+  // Revoke the previous to url to free the blob
+  if (blobUrl) {
+    window.URL.revokeObjectURL(blobUrl);
+  }
 
-  // trigger download
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  blobUrl = URL.createObjectURL(blob);
+
+  // embed preview
+  try {
+    PDFObject.embed(blobUrl, embedTarget);
+  } catch (err) {
+    console.error(err);
+  }
+
+  // set up for download
   a.href = blobUrl;
   a.download = fileName;
-  a.click();
-  window.URL.revokeObjectURL(blobUrl);
+  a.style = "display: inline";
 }
 
 function initKey(map, key) {
@@ -80,6 +95,10 @@ function initEventHandlers() {
     }
 
     buildPdf(getAsset, saveAsFile, dataMap);
+  });
+
+  el.addEventListener("focus", () => {
+    a.style = "display: none";
   });
 }
 
