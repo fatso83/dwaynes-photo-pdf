@@ -73,8 +73,8 @@ function initKey(map, key) {
   map[key].pos = map[key].pos || {};
 }
 
+const el = document.getElementById("input-form");
 function initEventHandlers() {
-  const el = document.getElementById("input-form");
   el.addEventListener("submit", e => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -103,3 +103,6 @@ function initEventHandlers() {
 }
 
 initEventHandlers();
+
+// initiate preview
+//el.submit();

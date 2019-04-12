@@ -35,14 +35,14 @@ const getPageDimensions = page => {
   return { width: mediaBox.array[2].number, height: mediaBox.array[3].number };
 };
 
+const devPrintIntName =
+  "Color_Film_Devloping_Prints_International_Shipping.pdf";
 module.exports = async function buildPdf(getAsset, saveAsFile, data) {
   /* ==================== 1. Read in Fonts and Images ========================= */
   // This step is platform dependent. Node scripts can just read the assets in
   // from the file system. Browsers might need to make HTTP requests for the assets.
   const assets = {
-    devPrintInt: await getAsset(
-      "assets/Color_Film_Devloping_Prints_International_Shipping.pdf"
-    )
+    devPrintInt: await getAsset("assets/" + devPrintIntName)
   };
 
   /* ================ 2. Create and Setup the PDF Document ==================== */
@@ -119,6 +119,6 @@ module.exports = async function buildPdf(getAsset, saveAsFile, data) {
   /* ========================== 6. Write PDF to File ========================== */
   // Node environments can save directly to file, whereas browsers might need to
   // turn to more exotic solutions
-  const fileName = "pre-filled.pdf";
+  const fileName = `pre-filled-${devPrintIntName}`;
   saveAsFile(fileName, pdfBytes);
 };
