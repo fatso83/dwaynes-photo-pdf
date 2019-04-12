@@ -6,7 +6,8 @@
   "scripts": {
     "build": "browserify . -d -o dist/index.js",
     "deploy": "now",
-    "start": "npm run build && http-server ."
+    "start": "npm run build && http-server .",
+    "postinstall": "cp node_modules/pdf-lib/dist/pdf-lib.min.js assets/"
   },
   "browserify": {
     "transform": [

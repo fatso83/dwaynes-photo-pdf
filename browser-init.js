@@ -39,15 +39,18 @@ async function getAsset(path) {
   return new Uint8Array(arrayBuffer);
 }
 
+var a = document.createElement("a");
+document.body.appendChild(a);
+a.style = "display: none";
 async function saveAsFile(fileName, pdfBytes) {
-  const blob = new Blob([pdfBytes]);
+  const blob = new Blob([pdfBytes], { type: "octet/stream" });
   const blobUrl = URL.createObjectURL(blob);
 
-  // trigger download - alternatively you could create a link
-  // using the fileName passed in as an attribute on the link
-  // See https://stackoverflow.com/a/25911218/200987
-  //window.location.replace(blobUrl);
-  window.open(blobUrl);
+  // trigger download
+  a.href = blobUrl;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(blobUrl);
 }
 
 function initKey(map, key) {
