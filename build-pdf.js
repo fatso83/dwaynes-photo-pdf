@@ -37,6 +37,7 @@ const getPageDimensions = page => {
 
 const devPrintIntName =
   "Color_Film_Devloping_Prints_International_Shipping.pdf";
+
 module.exports = async function buildPdf(getAsset, saveAsFile, data) {
   /* ==================== 1. Read in Fonts and Images ========================= */
   // This step is platform dependent. Node scripts can just read the assets in
@@ -89,7 +90,7 @@ module.exports = async function buildPdf(getAsset, saveAsFile, data) {
   const pdfOperators = Object.keys(data).map(key => {
     const el = data[key];
 
-    return drawLinesOfText([el.val].map(courierFont.encodeText), {
+    return drawLinesOfText([el.value].map(courierFont.encodeText), {
       x: el.x,
       y: el.y,
       font: COURIER_FONT,

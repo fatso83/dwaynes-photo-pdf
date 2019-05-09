@@ -1,35 +1,29 @@
 const buildPdf = require("./build-pdf");
 const PDFObject = require("pdfobject");
+const pdfElements = {};
 
 /**
- * Track mouse relative to some element
- *
- * TODO: Add preview/embed functionality and use the preview
- * to get exact pixel offsets for the input boxes
- * Typically, some kind of hover effect for the mouse showing (X,Y)
+ * @param {String} name the element name
+ * @param {Number[]} geometry where to place the element
  */
-function getRelativeCoordinates(event, element) {
-  const position = {
-    x: event.pageX,
-    y: event.pageY
+function addPdfElement(name, x, y, value = null) {
+  pdfElements[name] = {
+    value,
+    x,
+    y
   };
+}
 
-  const offset = {
-    left: element.offsetLeft,
-    top: element.offsetTop
-  };
-
-  let reference = element.offsetParent;
-
-  while (reference != null) {
-    offset.left += reference.offsetLeft;
-    offset.top += reference.offsetTop;
-    reference = reference.offsetParent;
-  }
-
-  return {
-    x: position.x - offset.left,
-    y: position.y - offset.top
+function throttle(func, limit) {
+  let inThrottle;
+  return function() {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => (inThrottle = false), limit);
+    }
   };
 }
 
@@ -42,9 +36,9 @@ async function getAsset(path) {
 
 const embedTarget = document.getElementById("embed-pdf");
 const a = document.getElementById("save-btn");
-//const a = document.createElement("a");
-//document.body.appendChild(a);
+
 a.style = "display: none";
+
 let blobUrl;
 async function saveAsFile(fileName, pdfBytes) {
   // Revoke the previous to url to free the blob
@@ -79,20 +73,7 @@ function initEventHandlers() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    // builds a map of the value and where to put it
-    var dataMap = {};
-    for (const entry of formData.entries()) {
-      const [key, val] = entry;
-      const match = key.match(/([^-]*)(-([xy]))?/);
-      if (match) {
-        var keyName = match[1];
-        initKey(dataMap, keyName);
-
-        const posXY = match[3];
-        if (posXY) dataMap[keyName][posXY] = Number(val);
-        else dataMap[keyName].val = val;
-      }
-    }
+    var dataMap = pdfElements;
 
     buildPdf(getAsset, saveAsFile, dataMap);
   });
@@ -104,5 +85,9 @@ function initEventHandlers() {
 
 initEventHandlers();
 
-// initiate preview
-//el.submit();
+addPdfElement("name", 280, 733, "John Doe");
+addPdfElement("address", 280, 717, "Kirkeveien 90D");
+addPdfElement("city", 280, 701, "Oslo");
+addPdfElement("zip", 280, 686, "0370");
+addPdfElement("phone", 280, 673, "+47 40065078");
+addPdfElement("email", 280, 658, "carlerik@gmail.com");
